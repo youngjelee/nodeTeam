@@ -111,14 +111,16 @@ app.get('/getAddress',async (req,res)=>{
 });
 
 //법정동 리스트
-app.get('/getBjdCdList',async (req,res)=>{
+app.get('/getBjdCdList',async (req,re,next)=>{
     
     try{
          const {getBjdCdList} = require('./api/apartment');
-        getBjdCdList();
-    
+        const result = await getBjdCdList() ;
+        
+         return res.send(result);
     }catch(err){
         console.log(err);
+        next();
     }
 
 
