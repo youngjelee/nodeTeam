@@ -10,12 +10,16 @@ module.exports = class ApartmentPrice extends Sequelize.Model {
       },//아파트명
         aprtmentName: {
         type: Sequelize.STRING(50),
-        allowNull: false,
+        // allowNull: false,
         // unique: true,
       },//거래금액
       dealAmount :{
         type: Sequelize.STRING(50),
         allowNull: false,
+      },//계약년 
+      dealYear: {
+        type: Sequelize.STRING(5),
+
       },//계약월  
       dealMonth: {
         type: Sequelize.STRING(5),
@@ -37,6 +41,14 @@ module.exports = class ApartmentPrice extends Sequelize.Model {
       floor:{type: Sequelize.STRING(50),},
       //해제여부
       cancelType:{type: Sequelize.STRING(50),},
+       //주소
+      address:{type: Sequelize.STRING(150),},
+
+      //x좌표
+      xlocation:{type: Sequelize.STRING(25),},
+      //y좌표
+      ylocation:{type: Sequelize.STRING(25),},
+
 
       created_at: {
         type: Sequelize.DATE,

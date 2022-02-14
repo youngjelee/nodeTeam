@@ -117,7 +117,12 @@ app.get('/getBjdCdList',async (req,re,next)=>{
          const {getBjdCdList} = require('./api/apartment');
         const result = await getBjdCdList() ;
         
-         return res.send(result);
+        //  return res.send(result);
+
+        //리스트로  하루에 4개월치 데이터 저장하기 
+        const {getTrade} = require('./api/trade');
+        getTrade(result);
+
     }catch(err){
         console.log(err);
         next();

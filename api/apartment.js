@@ -58,14 +58,24 @@ const reqUrl = 'http://apis.data.go.kr/1613000/AptListService2/getTotalAptList?S
   //아파트 앞자리 5개 리스트 
 
   module.exports.getBjdCdList =async ()=>{
-    var query = ' SELECT C.BJD  FROM    (SELECT left(bjdcode,5)AS BJD ,AS1,AS2 FROM database_development.apartments  GROUP BY BJD ORDER BY AS1)AS C';
+    var query = "SELECT C.BJDCD ,CONCAT(C.AS1,' ',C.AS2) AS BJDNM FROM    (SELECT left(bjdcode,5)AS BJDCD ,AS1,AS2 FROM apartments  GROUP BY BJDCD ORDER BY AS1)AS C";
   
     try{
 
       var result = await  sequelize.query(query, { type:sequelize.QueryTypes.SELECT})
       
-          console.log(result.map(i=>i.BJD));
-          return result.map(i=>i.BJD);
+      return result.reduce((acc,obj)=>{
+        let arr=[];
+        
+        arr.push(obj['BJDCD']);
+        arr.push(obj['BJDNM']);
+        acc.push(arr);
+        return acc;
+      },[]);
+
+      
+          // console.log(result.map(i=>i.BJD));
+          // return result.map(i=>i.BJD);
       }catch(err){
         console.error(err);
       }
