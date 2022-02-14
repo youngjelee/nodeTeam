@@ -110,7 +110,8 @@ app.get('/getAddress',async (req,res)=>{
     }
 });
 
-//법정동 리스트
+//법정동 리스트를 가져와서 하루 트래픽 초과를 하지않는선에서 넣어준다 
+//( 배치작업 필요)
 app.get('/getBjdCdList',async (req,re,next)=>{
     
     try{
@@ -128,8 +129,17 @@ app.get('/getBjdCdList',async (req,re,next)=>{
         next();
     }
 
-
 });
+//좌표설정이 안된 거래들 찾아서 좌표 넣어준다.
+app.get('/setLocation',async (req,res,next)=>{
+
+    const {getNolocation} =require('./api/trade');
+    console.log(await getNolocation());
+});
+
+
+
+
 app.get('/addApart',async (req,res)=>{
     
     try{

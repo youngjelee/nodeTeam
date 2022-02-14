@@ -17,7 +17,7 @@ db.ApartmentPrice = ApartmentPrice ;
 
 
 db.sequelize = sequelize;
-
+db.Op = Sequelize.Op;
 User.init(sequelize);
 Apartment.init(sequelize);
 ApartmentPrice.init(sequelize);

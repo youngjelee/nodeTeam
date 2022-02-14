@@ -1,4 +1,4 @@
-const {ApartmentPrice} = require('../models');
+const {ApartmentPrice,Op} = require('../models');
 const request = require('request');
 const {xmlToJson} = require('../module');
 
@@ -54,12 +54,13 @@ module.exports.getTrade = async (param)=>{
         //시도 + 시군구 + 읍면동 _번지 검색하면 주소정확히나옴
     });
 
-    // for(var i of result){
-    //     ApartmentPrice.create({
-
-    //     })
-    // }
-
-
-
 }   
+
+module.exports.getNolocation =async ()=>{
+    return await ApartmentPrice.findAll({
+        attirbutes: ['address'],
+        where : {
+            xlocation : {[Op.eq]: null },
+            ylocation : {[Op.eq]: null },    }
+    });
+}
