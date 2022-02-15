@@ -23,7 +23,6 @@ module.exports.getTrade = async (param)=>{
         methods:'GET',
         url : `${tradeUrl}&LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&serviceKey=${tradeSecretEnKey}`
     }
-    console.log(option);
 
     request(option, (err,res)=>{
         var jsonVal = xmlToJson(res.body);
@@ -57,10 +56,44 @@ module.exports.getTrade = async (param)=>{
 }   
 
 module.exports.getNolocation =async ()=>{
-    return await ApartmentPrice.findAll({
-        attirbutes: ['address'],
+    const result =  await ApartmentPrice.findAll({
+        attributes: ['id','address'],
         where : {
             xlocation : {[Op.eq]: null },
             ylocation : {[Op.eq]: null },    }
     });
+    
+    //[{adress:'주소' , id:id} ,{adress:'주소' , id:id}  ... ] 
+    const noLocationList =result.map(v=>v.dataValues); 
+    const {updateLocation} = require('./trade/location');
+    
+    
+    //데이터 주소조회 안됨 ; 
+    var stand = 300;
+    var sepNoLocationList = [];
+    if(noLocationList.length > stand ){
+        let cnt = Math.round(noLocationList.length/stand);
+        let i = 0 ;
+
+        while(i<=cnt){
+            sepNoLocationList.push(noLocationList.slice(i*stand,(i+1)*stand));
+            i++; 
+        }
+        console.log("111111111",sepNoLocationList);
+        //5초마다 request
+        // updateLocation(sepNoLocationList[0]);
+        for(let j= 0 ; j<sepNoLocationList.length ; j++){
+
+            // updateLocation(sepNoLocationList[j])
+            setTimeout(()=>{updateLocation(sepNoLocationList[j])},1000);
+
+        }
+
+    }else{
+        updateLocation(noLocationList);
+    }
+    
+
+
+
 }

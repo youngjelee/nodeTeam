@@ -134,7 +134,7 @@ app.get('/getBjdCdList',async (req,re,next)=>{
 app.get('/setLocation',async (req,res,next)=>{
 
     const {getNolocation} =require('./api/trade');
-    console.log(await getNolocation());
+    var noLocationList = await getNolocation();
 });
 
 
