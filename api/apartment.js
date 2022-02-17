@@ -58,7 +58,12 @@ const reqUrl = 'http://apis.data.go.kr/1613000/AptListService2/getTotalAptList?S
   //아파트 앞자리 5개 리스트 
 
   module.exports.getBjdCdList =async ()=>{
-    var query = "SELECT C.BJDCD ,CONCAT(C.AS1,' ',C.AS2) AS BJDNM FROM    (SELECT left(bjdcode,5)AS BJDCD ,AS1,AS2 FROM apartments  GROUP BY BJDCD ORDER BY AS1)AS C";
+    // 전국/
+    // var query = "SELECT C.BJDCD ,CONCAT(C.AS1,' ',C.AS2) AS BJDNM FROM    (SELECT left(bjdcode,5)AS BJDCD ,AS1,AS2 FROM apartments  GROUP BY BJDCD ORDER BY AS1)AS C";
+    
+    
+    //서울 //
+    var query = "SELECT  C.BJDCD ,CONCAT(C.AS1,' ',C.AS2) AS BJDNM FROM    (SELECT left(bjdcode,5)AS BJDCD ,AS1,AS2 FROM apartments  WHERE LEFT(bjdCode,2) ='11' GROUP BY BJDCD ORDER BY AS1)AS C";
   
     try{
 

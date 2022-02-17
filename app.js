@@ -9,6 +9,7 @@ const { sequelize} = require('./models');
 let request = require('request');
 const convert = require('xml-js');
 const {Apartment} = require('./models');
+const { resolve } = require('path');
 
 
 
@@ -32,7 +33,7 @@ app.use(morgan('dev'));
 
     // console.log("req.session값 ::::::::::" , req.session);
     // if(req.session.id){
-    //     express.static(path.join(__dirname,'public'))(req,res,next)
+        express.static(path.join(__dirname,'public'));
     // }else{
     //     next();
     // }
@@ -112,17 +113,49 @@ app.get('/getAddress',async (req,res)=>{
 
 //법정동 리스트를 가져와서 하루 트래픽 초과를 하지않는선에서 넣어준다 
 //( 배치작업 필요)
-app.get('/getBjdCdList',async (req,re,next)=>{
+app.get('/getBjdCdList',async (req,res,next)=>{
     
     try{
          const {getBjdCdList} = require('./api/apartment');
-        const result = await getBjdCdList() ;
-        
-        //  return res.send(result);
-
+         
+         const result = await getBjdCdList() ;
+        // const result = [[ '42150', '강원도 강릉시' ],[ '42110', '강원도 춘천시' ],[ '42130', '강원도 원주시' ]];
         //리스트로  하루에 4개월치 데이터 저장하기 
         const {getTrade} = require('./api/trade');
-        getTrade(result);
+   
+        let yymmList = [202101,202102,202103,202104,202105,202106,202107,202108,202109,202110,202111,202112]
+        
+       
+        
+        var i = 0 ; 
+        var j = 0 ;
+        var cnt = 0 ; 
+
+            var run = setInterval(()=>{
+                if(cnt ==result.length * yymmList.length) {
+                    clearInterval(run);
+                    console.log("수집종료 ")
+                }else{
+                    if(i<result.length){
+
+                        getTrade(result[i] , yymmList[j]);
+                        cnt++; i++;
+                    }else if( i >=result.length){
+                        j++ ; i=0;
+                    }
+                }
+            }, 100);
+
+
+        //    for(let i =0 ; i<result.length ; i++){
+        //        setTimeout(()=>{
+        //            getTrade(result[i] , yymmList[0]);
+        //         },1000*i);
+               
+        //     }
+        
+   
+        
 
     }catch(err){
         console.log(err);
@@ -135,11 +168,8 @@ app.get('/setLocation',async (req,res,next)=>{
 
     const {getNolocation} =require('./api/trade');
     const locationList = await getNolocation();
-
     const {updateLocation} = require('./api/trade/location');
 
-
-    
     var i = 0 ; 
     var run = setInterval(()=>{
          if(i ==locationList.length) {
@@ -149,7 +179,7 @@ app.get('/setLocation',async (req,res,next)=>{
              updateLocation(locationList[i]);
              i++
          }
-    }, 800)
+    }, 10)
         // console.log(locationList[i])
         //     setTimeout(()=>{
         //     updateLocation(locationList[i]);    

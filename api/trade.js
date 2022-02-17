@@ -2,9 +2,11 @@ const {ApartmentPrice,Op} = require('../models');
 const request = require('request');
 const {xmlToJson} = require('../module');
 
-module.exports.getTrade = async (param)=>{
-    //param : [[지역번호,지역이름],[지역번호,지역이름]...... ];
+module.exports.getTrade = async (lawdCdNm , yymmList )=>{
+    //lawdCdNm : [[지역번호,지역이름],[지역번호,지역이름]...... ];
     const tradeSecretEnKey = 'CBTMH%2F%2F2byGmVDlIOfwujuFQDtX5a%2BYMzA%2BesYsZNzaKjctiVKg2XOONAJdDOlL%2FIPUnCEueAJGQejFQMqdovw%3D%3D';
+    // const tradeSecretEnKey = '2HIeDLqd4eSLgDCAf9F5m4M6g4BNIeXa0m5J%2Ftyl8gXFeiUDL0EP8%2FMxD5Nl1J1gxM7V23XMUHsf6q5YANb4xw%3D%3D';
+
     const tradeSecretDeKey = 'CBTMH//2byGmVDlIOfwujuFQDtX5a+YMzA+esYsZNzaKjctiVKg2XOONAJdDOlL/IPUnCEueAJGQejFQMqdovw==';
     const tradeUrl = 'http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?type=xml';
     
@@ -13,12 +15,15 @@ module.exports.getTrade = async (param)=>{
     //LAWD_CD : 11110 , DEAL_YMD : 201512 ,serviceKey :인코딩 or 디코딩 키 
     // let LAWD_CD = '';
     //let DEAL_YMD='';
-    let LAWD_CD = param[0][0];         //테스트후 첫번쨰 배열자리 동적으로변경
-    let DEAL_YMD='202112';
     // const serviceKey = '';
-    let LAWD_NM = param[0][1];         //테스트후 첫번쨰 배열자리 동적으로변경
-
-    // for()
+    console.log("test",lawdCdNm,yymmList);
+    // return false;
+        let DEAL_YMD=yymmList;
+        
+       
+        let LAWD_CD = lawdCdNm[0];         //테스트후 첫번쨰 배열자리 동적으로변경
+        let LAWD_NM = lawdCdNm[1];         //테스트후 첫번쨰 배열자리 동적으로변경
+        
     const option ={
         methods:'GET',
         url : `${tradeUrl}&LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&serviceKey=${tradeSecretEnKey}`
@@ -26,15 +31,31 @@ module.exports.getTrade = async (param)=>{
 
     request(option, (err,res)=>{
         var jsonVal = xmlToJson(res.body);
+
+        console.log(jsonVal.response);
+        // return false;
         var result = jsonVal['response']['body']['items']['item'];
         console.log(result);
         
         for(var i  in result ){
 
-            // if(result[i]['해제여부']===undefined) {result[i]['해제여부']={_text:'X'} }
+            if(result[i]['거래금액']===undefined) {result[i]['거래금액']={_text:''} } 
+            if(result[i]['건축년도']===undefined) {result[i]['건축년도']={_text:''} } 
+            if(result[i]['법정동']===undefined) {result[i]['법정동']={_text:''} } 
+            if(result[i]['아파트']===undefined) {result[i]['아파트']={_text:''} } 
+            if(result[i]['년']===undefined) {result[i]['년']={_text:''} } 
+            if(result[i]['월']===undefined) {result[i]['월']={_text:''} } 
+            if(result[i]['일']===undefined) {result[i]['일']={_text:''} } 
+            if(result[i]['전용면적']===undefined) {result[i]['전용면적']={_text:''} } 
+            if(result[i]['지번']===undefined) {result[i]['지번']={_text:''} } 
+            if(result[i]['지역코드']===undefined) {result[i]['지역코드']={_text:''} } 
+            if(result[i]['층']===undefined) {result[i]['층']={_text:''} } 
+            if(result[i]['해제여부']===undefined) {result[i]['해제여부']={_text:''} } 
+            
+
 
             ApartmentPrice.create({
-                dealAmount: result[i]['거래금액']['_text'].trim(),               //거래금액
+                dealAmount: result[i]['거래금액']['_text'].trim(),         //거래금액
                 buildYear : result[i]['건축년도']['_text']  ,             //건축년도
                 dong : result[i]['법정동']['_text']  ,                   //법정동
                 aprtmentName : result[i]['아파트']['_text']  ,           //아파트명
@@ -53,6 +74,8 @@ module.exports.getTrade = async (param)=>{
         //시도 + 시군구 + 읍면동 _번지 검색하면 주소정확히나옴
     });
 
+ 
+     
 }   
 
 module.exports.getNolocation =async ()=>{
@@ -65,36 +88,6 @@ module.exports.getNolocation =async ()=>{
     
     //[{adress:'주소' , id:id} ,{adress:'주소' , id:id}  ... ] 
     return result.map(v=>v.dataValues); 
-    // const {updateLocation} = require('./trade/location');
-    
-    
-    //데이터 주소조회 안됨 ; 
-    // var stand = 300;
-    // var sepNoLocationList = [];
-    // if(noLocationList.length > stand ){
-    //     let cnt = Math.round(noLocationList.length/stand);
-    //     let i = 0 ;
-
-    //     while(i<=cnt){
-    //         sepNoLocationList.push(noLocationList.slice(i*stand,(i+1)*stand));
-    //         i++; 
-    //     }
-    //     console.log("111111111",sepNoLocationList);
-    //     //5초마다 request
-    //     // updateLocation(sepNoLocationList[0]);
-    //     for(let j= 0 ; j<sepNoLocationList.length ; j++){
-
-    //         // updateLocation(sepNoLocationList[j])
-    //         setTimeout(()=>{updateLocation(sepNoLocationList[j])},1000);
-
-    //     }
-
-    // }else{
-
-            // updateLocation(noLocationList);
-    // }
-    
-
-
+ 
 
 }

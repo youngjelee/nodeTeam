@@ -24,7 +24,10 @@ module.exports.updateLocation = async (noLocationList) =>{
                 if(error) new Error('400');
                 // console.log("===========몇번쨰리퀘스트???",i);
                 var result = JSON.parse(response.body);
-                
+                console.log("========================================",result.documents[0]===undefined);
+                if(result.documents[0]===undefined) {result['documents'].push({x:''})} 
+                if(result.documents[0]===undefined) {result['documents'].push({y:''}) }
+ 
                 //  result.documents[0].x   // result.documents[0].y 
                 // var jsonVal = xmlToJson(response.body);
                 // console.log(jsonVal);
