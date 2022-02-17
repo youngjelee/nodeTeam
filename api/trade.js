@@ -64,34 +64,35 @@ module.exports.getNolocation =async ()=>{
     });
     
     //[{adress:'주소' , id:id} ,{adress:'주소' , id:id}  ... ] 
-    const noLocationList =result.map(v=>v.dataValues); 
-    const {updateLocation} = require('./trade/location');
+    return result.map(v=>v.dataValues); 
+    // const {updateLocation} = require('./trade/location');
     
     
     //데이터 주소조회 안됨 ; 
-    var stand = 300;
-    var sepNoLocationList = [];
-    if(noLocationList.length > stand ){
-        let cnt = Math.round(noLocationList.length/stand);
-        let i = 0 ;
+    // var stand = 300;
+    // var sepNoLocationList = [];
+    // if(noLocationList.length > stand ){
+    //     let cnt = Math.round(noLocationList.length/stand);
+    //     let i = 0 ;
 
-        while(i<=cnt){
-            sepNoLocationList.push(noLocationList.slice(i*stand,(i+1)*stand));
-            i++; 
-        }
-        console.log("111111111",sepNoLocationList);
-        //5초마다 request
-        // updateLocation(sepNoLocationList[0]);
-        for(let j= 0 ; j<sepNoLocationList.length ; j++){
+    //     while(i<=cnt){
+    //         sepNoLocationList.push(noLocationList.slice(i*stand,(i+1)*stand));
+    //         i++; 
+    //     }
+    //     console.log("111111111",sepNoLocationList);
+    //     //5초마다 request
+    //     // updateLocation(sepNoLocationList[0]);
+    //     for(let j= 0 ; j<sepNoLocationList.length ; j++){
 
-            // updateLocation(sepNoLocationList[j])
-            setTimeout(()=>{updateLocation(sepNoLocationList[j])},1000);
+    //         // updateLocation(sepNoLocationList[j])
+    //         setTimeout(()=>{updateLocation(sepNoLocationList[j])},1000);
 
-        }
+    //     }
 
-    }else{
-        updateLocation(noLocationList);
-    }
+    // }else{
+
+            // updateLocation(noLocationList);
+    // }
     
 
 

@@ -134,7 +134,27 @@ app.get('/getBjdCdList',async (req,re,next)=>{
 app.get('/setLocation',async (req,res,next)=>{
 
     const {getNolocation} =require('./api/trade');
-    var noLocationList = await getNolocation();
+    const locationList = await getNolocation();
+
+    const {updateLocation} = require('./api/trade/location');
+
+
+    
+    var i = 0 ; 
+    var run = setInterval(()=>{
+         if(i ==locationList.length) {
+             clearInterval(run);
+             console.log("수집종료 ")
+         }else{
+             updateLocation(locationList[i]);
+             i++
+         }
+    }, 800)
+        // console.log(locationList[i])
+        //     setTimeout(()=>{
+        //     updateLocation(locationList[i]);    
+        // } , 3000);
+
 });
 
 
