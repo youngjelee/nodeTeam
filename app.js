@@ -10,7 +10,7 @@ let request = require('request');
 const convert = require('xml-js');
 const {Apartment} = require('./models');
 const { resolve } = require('path');
-
+const {makeMonthArr } =require('./module');
 
 
 const app = express();
@@ -93,48 +93,51 @@ app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'test.html'));
 
 });
+//전국아파트 api 호출 및 db저장 
 app.get('/getApartments',async (req,res)=>{
     try{
          const {getApartments } = require('./api/apartment');
-         getApartments(20000);
+         getApartments(20000,req,res);
     }catch(err){
         console.log(err);
     }
 });
 //미정
-app.get('/getAddress',async (req,res)=>{
-    try{
-         const {getAddress} =  require('./api/apartment');
-        getAddress();
-    }catch(err){
-        console.log(err);
-    }
-});
+// app.get('/getAddress',async (req,res)=>{
+//     try{
+//          const {getAddress} =  require('./api/apartment');
+//         getAddress();
+//     }catch(err){
+//         console.log(err);
+//     }
+// });
 
-//법정동 리스트를 가져와서 하루 트래픽 초과를 하지않는선에서 넣어준다 
+//법정동 리스트를 가져와서 하루 트래픽 초과를 하지않는선에서 넣어줘야한다.
 //( 배치작업 필요)
-app.get('/getBjdCdList',async (req,res,next)=>{
+app.get('/getBjdCdList/:year',async (req,res,next)=>{
     
     try{
+
+        const year = req.params.year;
          const {getBjdCdList} = require('./api/apartment');
          
          const result = await getBjdCdList() ;
         // const result = [[ '42150', '강원도 강릉시' ],[ '42110', '강원도 춘천시' ],[ '42130', '강원도 원주시' ]];
-        //리스트로  하루에 4개월치 데이터 저장하기 
         const {getTrade} = require('./api/trade');
-   
-        let yymmList = [202101,202102,202103,202104,202105,202106,202107,202108,202109,202110,202111,202112]
+
+
+        let yymmList = makeMonthArr(year)
         
        
         
-        var i = 0 ; 
-        var j = 0 ;
+        var i = 0 ; var j = 0 ;
         var cnt = 0 ; 
 
             var run = setInterval(()=>{
                 if(cnt ==result.length * yymmList.length) {
                     clearInterval(run);
-                    console.log("수집종료 ")
+                    console.log("수집종료");
+                    return res.json(`${year}년도 수집완료`);
                 }else{
                     if(i<result.length){
 
@@ -144,18 +147,7 @@ app.get('/getBjdCdList',async (req,res,next)=>{
                         j++ ; i=0;
                     }
                 }
-            }, 100);
-
-
-        //    for(let i =0 ; i<result.length ; i++){
-        //        setTimeout(()=>{
-        //            getTrade(result[i] , yymmList[0]);
-        //         },1000*i);
-               
-        //     }
-        
-   
-        
+            }, 10);
 
     }catch(err){
         console.log(err);
@@ -163,7 +155,7 @@ app.get('/getBjdCdList',async (req,res,next)=>{
     }
 
 });
-//좌표설정이 안된 거래들 찾아서 좌표 넣어준다.
+//좌표설정이 안된 거래들 찾아서 좌표 넣어준다. 하루 10만건 , 한달 300만건제한있음 .
 app.get('/setLocation',async (req,res,next)=>{
 
     const {getNolocation} =require('./api/trade');

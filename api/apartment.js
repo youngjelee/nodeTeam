@@ -12,7 +12,17 @@ const reqUrl = 'http://apis.data.go.kr/1613000/AptListService2/getTotalAptList?S
 
 
 
-  module.exports.getApartments = count=>{
+  module.exports.getApartments =async (count,req,res)=>{
+    
+    
+    let isExist = await Apartment.findAll({
+    
+    });
+    if(isExist){
+      return res.json(`${isExist.length}건이 이미 등록되어있습니다.`);
+    }
+
+    
     const option = {
         methods:'GET',
         url : reqUrl+count,
@@ -31,7 +41,7 @@ const reqUrl = 'http://apis.data.go.kr/1613000/AptListService2/getTotalAptList?S
       if(result[i]['as3']===undefined) {result[i]['as3']={_text:''} } 
       if(result[i]['as4']===undefined) {result[i]['as4']={_text:''} } 
  
-        Apartment.create({
+      Apartment.create({
             bjdCode : result[i]['bjdCode']['_text'],
             kaptName: result[i]['kaptName']['_text'],
             // doroJuso : result[i]['doroJuso']['_text'],
@@ -44,7 +54,7 @@ const reqUrl = 'http://apis.data.go.kr/1613000/AptListService2/getTotalAptList?S
         });
         }
 
-})
+}); return res.json('정상등록되었습니다.');
   }
 
   //도로명 가져오는 함수 

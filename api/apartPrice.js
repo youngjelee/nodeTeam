@@ -12,9 +12,7 @@ let DEAL_YMD = '';
 
   module.exports = ()=>{
 
-    var lawdCdArr =['11545','11680','11470','11350','11650','11500','11560','11215','11710','11320','11590','11620','11440','11305','11290','11410','11170','11740','11200','11140','11230','11380','11260','11530','11110']
-    var dealYmdArr = ['202101','202102','202103','202104','202105','202106','202107','202108','202109','202110','202111','202112']
-
+ 
     
     const option = {
         methods:'GET',
@@ -27,7 +25,6 @@ let DEAL_YMD = '';
     
     var xmlToJson = convert.xml2json(response.body, {compact: true, spaces: 4});
     var jsonVal = JSON.parse(xmlToJson);
-    console.log("제이슨벨류",jsonVal);
     var testVal = jsonVal['response']['body']['items']['item'];
     console.log(testVal);
     
