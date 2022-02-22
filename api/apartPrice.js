@@ -16,7 +16,6 @@ let DEAL_YMD = '';
     
     const option = {
         methods:'GET',
-        // url : `${url}LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&serviceKey=${serviceKey}`
         url : `${url}LAWD_CD=11545&DEAL_YMD=202101&serviceKey=${serviceKey}`
     }
 
@@ -28,31 +27,7 @@ let DEAL_YMD = '';
     var testVal = jsonVal['response']['body']['items']['item'];
     console.log(testVal);
     
-    // for(i in testVal){
-    //   if(testVal[i]['as1']===undefined) {testVal[i]['as1']={_text:''} } 
-    //   if(testVal[i]['as2']===undefined) {testVal[i]['as2']={_text:''} } 
-    //   if(testVal[i]['as3']===undefined) {testVal[i]['as3']={_text:''} } 
-    //   if(testVal[i]['as4']===undefined) {testVal[i]['as4']={_text:''} } 
-    //   // console.log(testVal[i]);
 
-    //     // console.log(testVal[i]['kaptName']['_text'])
-    //     // console.log(testVal[i]['as1']['_text']);
-    //     // console.log(testVal[i]['as2']['_text']);
-    //     // console.log(testVal[i]['as3']['_text']);
-    //     // console.log(testVal[i].['as4'][._text]);
-    //     Apartment.create({
-    //         bjdCode : testVal[i]['bjdCode']['_text'],
-    //         kaptName: testVal[i]['kaptName']['_text'],
-
-    //         as1 : testVal[i]['as1']['_text'],
-    //         as2 : testVal[i]['as2']['_text'],
-    //         as3 : testVal[i]['as3']['_text'],
-    //         as4 : testVal[i]['as4']['_text'] ,
-            
-    //     });
-    //     }
-
-   // console.log(jsonVal['response']['body']['items']['item']['kaptName'] );
 })
   }
 

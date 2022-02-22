@@ -1,6 +1,5 @@
 const express = require('express');
 var path = require('path');
-var behave = require('./behave');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -11,7 +10,7 @@ const convert = require('xml-js');
 const {Apartment} = require('./models');
 const { resolve } = require('path');
 const {makeMonthArr } =require('./module');
-
+const apart = require('./controller/apart');
 
 const app = express();
 
@@ -61,7 +60,7 @@ app.use(multer().array());
 
 
 app.use('/showLog',showLog);
-app.use('/behave',behave);
+app.use('/apart',apart);
 
 ////////////라우터간에 데이터 공유할떄 ::: req.data (요청한번 다 훑고나면 메모리에서정리됨)  ,,, req.session.data(세션유지시 계속유지)
 app.use((req,res,next)=>{
