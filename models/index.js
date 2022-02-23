@@ -1,6 +1,7 @@
 
 const Sequelize = require('sequelize');
 const User = require('./user');
+const User2 = require('./user2');
 const Apartment = require('./apartment');
 const ApartmentPrice = require('./apartprice');
 
@@ -12,6 +13,7 @@ const  sequelize = new Sequelize(config.database, config.username, config.passwo
 
 
 db.User= User;
+db.User2= User2;
 db.Apartment = Apartment ; 
 db.ApartmentPrice = ApartmentPrice ; 
 
@@ -19,6 +21,7 @@ db.ApartmentPrice = ApartmentPrice ;
 db.sequelize = sequelize;
 db.Op = Sequelize.Op;
 User.init(sequelize);
+User2.init(sequelize);
 Apartment.init(sequelize);
 ApartmentPrice.init(sequelize);
 

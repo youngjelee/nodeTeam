@@ -11,8 +11,18 @@ const {Apartment} = require('./models');
 const { resolve } = require('path');
 const {makeMonthArr } =require('./module');
 const apart = require('./controller/apart');
-
+const login = require('./login');
+require('dotenv').config();
 const app = express();
+
+
+
+const passport = require('passport');
+require('./passport')(passport);
+
+
+
+
 
 sequelize.sync({})
 .then(()=>{console.log('데이터베이스 성공')
@@ -40,12 +50,13 @@ app.use(morgan('dev'));
 // );
 
 
+
 //운영용 app.use(morgan('combined'));
 app.use(cookieParser('test'))
 app.use(express.json()); //클라이언트에서 json 형식으로 데이터를 보내줬을때 req.body 로 받아서 바로쓸수있게 해줌
 app.use(express.urlencoded({extend:true}));   //form데이터를 파싱해줌 , extend true면 qs ,false면 querystring
 app.use(session({
-
+    secret : process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie:{
@@ -54,13 +65,19 @@ app.use(session({
 }
 
 ));
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.use(multer().array());
 //form데이터중 이미지를 urlencoded가 해결해줄수없어서 multer 사용
 
 
-
 app.use('/showLog',showLog);
 app.use('/apart',apart);
+app.use('/login',login);
 
 ////////////라우터간에 데이터 공유할떄 ::: req.data (요청한번 다 훑고나면 메모리에서정리됨)  ,,, req.session.data(세션유지시 계속유지)
 app.use((req,res,next)=>{
@@ -79,6 +96,8 @@ app.use((err,req,res,next)=>{
     console.error(err.stack);
     res.status(404).send('404에러페이쥐');
 })
+
+
 
 app.get('/',(req,res)=>{
     console.log(req.session)   //사용자의 세션
